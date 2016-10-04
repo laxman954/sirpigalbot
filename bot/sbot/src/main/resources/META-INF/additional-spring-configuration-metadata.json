@@ -1,0 +1,9 @@
+{
+	"properties": [
+		{
+			"name": "slackBotToken",
+			"type": "java.lang.String",
+			"description": "You can get your slack token -https://my.slack.com/services/new/bot"
+		}
+	]
+}
