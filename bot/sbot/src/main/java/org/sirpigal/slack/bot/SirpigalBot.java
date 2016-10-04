@@ -1,9 +1,12 @@
 package org.sirpigal.slack.bot;
 
+import java.util.Base64;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.socket.WebSocketSession;
 
 import me.ramswaroop.jbot.core.slack.Bot;
@@ -36,12 +39,13 @@ public class SirpigalBot extends Bot {
 
 	@Override
 	public String getSlackToken() {
-		return slackToken;
+		byte[] token = Base64.getDecoder().decode(slackToken);
+		return new String(token);
 	}
 
 	/**
-	 * Invoked when the bot receives a direct mention (@sirpigalbot: message) or a
-	 * direct message. NOTE: These two event types are added by jbot to make
+	 * Invoked when the bot receives a direct mention (@sirpigalbot: message) or
+	 * a direct message. NOTE: These two event types are added by jbot to make
 	 * your task easier, Slack doesn't have any direct way to determine these
 	 * type of events.
 	 *
