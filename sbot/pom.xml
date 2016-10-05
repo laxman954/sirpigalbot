@@ -11,7 +11,7 @@
 	<artifactId>sbot</artifactId>
 	<groupId>org.sirpigal</groupId>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>sbot</name>
 	<description>Sirpigal slack bot</description>
 
@@ -39,6 +39,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+	    </plugins>
+	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
