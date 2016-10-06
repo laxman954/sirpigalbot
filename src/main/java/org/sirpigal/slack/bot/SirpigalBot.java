@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.socket.WebSocketSession;
 
 import me.ramswaroop.jbot.core.slack.Bot;
@@ -38,7 +39,7 @@ public class SirpigalBot extends Bot {
 
 	@Override
 	public String getSlackToken() {
-		byte[] token = Base64.getDecoder().decode(slackToken);
+		byte[] token = Base64Utils.decodeFromString(slackToken);
 		return new String(token);
 	}
 
