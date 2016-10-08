@@ -54,5 +54,7 @@ public class SirpigalBot extends Bot {
 	public void onReceiveDM(WebSocketSession session, Event event) {
 		reply(session, event, new Message("Hi, I am " + slackService.getCurrentUser().getName()));
 	}
+	
+	
 
 }

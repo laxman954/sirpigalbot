@@ -24,9 +24,9 @@ public class SirpigalSlackApplication {
 		SpringApplication.run(SirpigalSlackApplication.class, args);
 	}
 	
-	@RequestMapping("/")
-	public String index() {
-		return "Greetings from Sirpigal Bot!";
-	}
+//	@RequestMapping("/")
+//	public String index() {
+//		return "Greetings from Sirpigal Bot!";
+//	}
 
 }
