@@ -3,6 +3,7 @@ package org.sirpigal.slack.bot;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.sirpigal.util.SlackUtil.htmlToSlacify;
 
 import java.util.Arrays;
 
@@ -55,35 +56,40 @@ public class SirpigalBotTest {
 		when(slackService.getCurrentUser()).thenReturn(user);
 		when(slackService.getWebSocketUrl()).thenReturn("");
 	}
-	
+
 	@Test
-    public void when_DirectMention_Should_InvokeOnDirectMention() throws Exception {
-        TextMessage textMessage = new TextMessage("{\"type\": \"message\"," +
-                "\"ts\": \"1358878749.000002\"," +
-                "\"user\": \"U023BECGF\"," +
-                "\"text\": \"<@sirpigalbot>: Hello\"}");
-        bot.handleTextMessage(session, textMessage);
-        assertThat(capture.toString(), containsString("Hi, I am"));
-    }
-	
-	 /**
-     * Slack Bot for unit tests.
-     */
-    public static class TestBot extends Bot {
-        
-        @Override
-        public String getSlackToken() {
-            return "slackToken";
-        }
+	public void when_DirectMention_Should_InvokeOnDirectMention() throws Exception {
+		TextMessage textMessage = new TextMessage("{\"type\": \"message\"," + "\"ts\": \"1358878749.000002\","
+				+ "\"user\": \"U023BECGF\"," + "\"text\": \"<@sirpigalbot>: Hello\"}");
+		bot.handleTextMessage(session, textMessage);
+		assertThat(capture.toString(), containsString("Hi, I am"));
+	}
 
-        @Override
-        public Bot getSlackBot() {
-            return this;
-        }
+	@Test
+	public void htlmlToSlackMarkup() {
+		org.junit.Assert.assertEquals("hi *bold* and _italic_ and ~strike~",
+				htmlToSlacify("hi <b>bold</b> and <i>italic</i> and <strike>strike</strike>"));
 
-        @Controller(events = EventType.DIRECT_MENTION)
-        public void onDirectMention(WebSocketSession session, Event event) {
-            System.out.println("Hi, I am Sirpigal Bot");
-        }
-    }
+	}
+
+	/**
+	 * Slack Bot for unit tests.
+	 */
+	public static class TestBot extends Bot {
+
+		@Override
+		public String getSlackToken() {
+			return "slackToken";
+		}
+
+		@Override
+		public Bot getSlackBot() {
+			return this;
+		}
+
+		@Controller(events = EventType.DIRECT_MENTION)
+		public void onDirectMention(WebSocketSession session, Event event) {
+			System.out.println("Hi, I am Sirpigal Bot");
+		}
+	}
 }
