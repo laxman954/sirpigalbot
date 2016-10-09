@@ -1,11 +1,17 @@
 package org.sirpigal.slack.bot;
 
+import static org.sirpigal.util.SirpigalUtil.getSirpigalContactDetails;
+import static org.sirpigal.util.SirpigalUtil.getTopNew;
+import static org.sirpigal.util.SirpigalUtil.getXMLFromUrl;
+import static org.sirpigal.util.SlackUtil.htmlToSlacify;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.socket.WebSocketSession;
+import org.w3c.dom.Document;
 
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.Controller;
@@ -54,7 +60,69 @@ public class SirpigalBot extends Bot {
 	public void onReceiveDM(WebSocketSession session, Event event) {
 		reply(session, event, new Message("Hi, I am " + slackService.getCurrentUser().getName()));
 	}
-	
-	
+
+	/**
+	 * Invoked when an item is pinned in the channel.
+	 *
+	 * @param session
+	 * @param event
+	 */
+	@Controller(events = EventType.PIN_ADDED)
+	public void onPinAdded(WebSocketSession session, Event event) {
+		reply(session, event, new Message("Thanks for the pin! You can find all pinned items under channel details."));
+	}
+
+	@Controller(pattern = "(help)", next = "selectOption")
+	public void sirpigalHelp(WebSocketSession session, Event event) {
+		startConversation(event, "selectOption");
+		reply(session, event, new Message(getHelpDetails()));
+
+	}
+
+	private String getHelpDetails() {
+		StringBuilder message = new StringBuilder();
+		message.append("Please Select Any one of the below option \n");
+		message.append("1.Latest News").append("\n");
+		message.append("2.Contact").append("\n");
+		message.append("3.Blood Group Availability").append("\n");
+		message.append("4.Send Queries").append("\n");
+		return message.toString();
+	}
+
+	@Controller
+	public void selectOption(WebSocketSession session, Event event) {
+		String replyMessage = getMessageByOption(event.getText()) + "\n\n Enter *help* to continue..";
+		reply(session, event, new Message(replyMessage));
+		stopConversation(event);
+	}
+
+	public String getMessageByOption(String text) {
+		String message = null;
+		switch (text) {
+		case "1":
+			message = getLatestNews();
+			break;
+		case "2":
+			message = getContactDetails();
+			break;
+		case "3":
+			break;
+		case "4":
+			break;
+		default:
+			message = "INVALID";
+			break;
+		}
+		return message;
+	}
+
+	public String getContactDetails() {
+		return getSirpigalContactDetails();
+	}
+
+	public String getLatestNews() {
+		Document doc = getXMLFromUrl("http://www.sirpigal.org/admin_bet/Download/sirpigal_post_details.xml");
+		return htmlToSlacify(getTopNew(doc));
+	}
 
 }
